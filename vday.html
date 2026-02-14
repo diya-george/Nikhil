@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Nikhil 🤍</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(to bottom, #fff6f9, #ffeef5);
+    color: #5a3e4d;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+/* PASSWORD PAGE */
+#passwordPage {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+input {
+    padding: 10px;
+    border-radius: 25px;
+    border: 1px solid #f4c2d7;
+    margin-top: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    border-radius: 25px;
+    border: none;
+    margin-top: 15px;
+    cursor: pointer;
+    background: #f8b6cc;
+    color: white;
+    font-weight: 500;
+}
+
+/* MAIN CONTENT */
+#mainContent { 
+    display: none; 
+    padding: 30px; 
+}
+
+/* PHOTO GRID */
+.photo-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 25px;
+    max-width: 750px;
+    margin: 40px auto;
+}
+
+.polaroid {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    transition: transform 0.3s ease;
+    background: white;
+}
+
+.polaroid img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.polaroid:hover {
+    transform: translateY(-6px);
+}
+
+/* NOTIFICATION */
+.notification {
+    margin-top: 30px;
+    font-size: 15px;
+    color: #d88ca3;
+    animation: fadePulse 2s ease-in-out infinite;
+}
+
+@keyframes fadePulse {
+    0%,100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* HEART GAME */
+.container {
+    position: relative;
+    height: 35vh;
+    margin-top: 20px;
+}
+
+.heart {
+    position: absolute;
+    font-size: 24px;
+    cursor: pointer;
+    color: #f4a6c1;
+    opacity: 0.9;
+}
+
+/* POPUP */
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: #d85c8a;
+    padding: 30px;
+    border-radius: 20px;
+    width: 85%;
+    max-width: 400px;
+    display: none;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
+/* FINAL PAGE */
+#finalPage {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    background: #fff0f6;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: #d85c8a;
+}
+
+/* FLOATING HEARTS */
+.falling-heart {
+    position: fixed;
+    top: -10px;
+    font-size: 18px;
+    color: #f4a6c1;
+    opacity: 0.5;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to { transform: translateY(110vh); }
+}
+
+/* SOFT PARTICLES */
+.particle {
+    position: fixed;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, #ffd6e7 0%, rgba(255,214,231,0.3) 70%, transparent 100%);
+    border-radius: 50%;
+    animation: floatParticle linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes floatParticle {
+    0% { transform: translateY(100vh); opacity: 0; }
+    30%,70% { opacity: 0.5; }
+    100% { transform: translateY(-20vh); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- PASSWORD -->
+<div id="passwordPage">
+    <h2>Enter our special date 🤍</h2>
+    <input type="password" id="passwordInput" placeholder="DD-MM-YY">
+    <button onclick="checkPassword()">Unlock</button>
+</div>
+
+<!-- MAIN -->
+<div id="mainContent">
+    <h1>50 Reasons I Love You, Nikhil 🤍</h1>
+    <p id="daysCounter"></p>
+    <p id="counter">Hearts found: 0 / 50</p>
+
+    <!-- PHOTO GRID -->
+    <div class="photo-section">
+        <div class="polaroid"><img src="photo1.jpg"></div>
+        <div class="polaroid"><img src="photo2.jpg"></div>
+        <div class="polaroid"><img src="photo3.jpg"></div>
+        <div class="polaroid"><img src="photo4.jpg"></div>
+    </div>
+
+    <!-- NOTIFICATION -->
+    <div class="notification">
+        Tap the hearts below 🤍
+    </div>
+
+    <div class="container" id="heartContainer"></div>
+
+    <div class="popup" id="popup">
+        <div id="reasonText"></div>
+        <button onclick="closePopup()">Close</button>
+    </div>
+
+    <audio id="bgMusic" autoplay loop>
+        <source src="oursong.mp3" type="audio/mpeg">
+    </audio>
+</div>
+
+<!-- FINAL PAGE -->
+<div id="finalPage">
+    <h1>Happy Valentine’s Day 🤍</h1>
+    <h2>I wished first again.</h2>
+</div>
+
+<script>
+
+/* PASSWORD */
+function checkPassword() {
+    if (document.getElementById("passwordInput").value === "22-08-22") {
+        document.getElementById("passwordPage").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+        document.getElementById("bgMusic").play();
+        startHearts();
+        startParticles();
+    } else {
+        alert("Wrong date 🤍");
+    }
+}
+
+/* DAYS COUNTER */
+function calculateDays() {
+    const startDate = new Date("2022-08-22");
+    const today = new Date();
+    const diffTime = today - startDate;
+    const days = Math.floor(diffTime / (1000*60*60*24));
+    document.getElementById("daysCounter").innerText =
+        "We’ve been together for " + days + " days";
+}
+calculateDays();
+
+/* FLOATING HEARTS */
+function startHearts() {
+    setInterval(() => {
+        let heart = document.createElement("div");
+        heart.className = "falling-heart";
+        heart.innerHTML = "❤";
+        heart.style.left = Math.random()*100 + "vw";
+        heart.style.animationDuration = (Math.random()*5+5)+"s";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),10000);
+    },1200);
+}
+
+/* SOFT PARTICLES */
+function startParticles(){
+    setInterval(()=>{
+        let particle=document.createElement("div");
+        particle.className="particle";
+        particle.style.left=Math.random()*100+"vw";
+        particle.style.animationDuration=(Math.random()*6+6)+"s";
+        document.body.appendChild(particle);
+        setTimeout(()=>particle.remove(),12000);
+    },1200);
+}
+
+/* 50 REASONS */
+const reasons = [
+"You make me feel safe in a way I didn’t know I needed.",
+"You listen to me even when I ramble.",
+"You understand my silence.",
+"You make ordinary days feel special.",
+"You are patient with me.",
+"You make me laugh when I least expect it.",
+"You calm my overthinking.",
+"You choose me every day.",
+"You make me feel wanted.",
+"You remember small details about me.",
+"You look at me like I matter.",
+"You celebrate my wins like they’re yours.",
+"You never make me feel alone.",
+"You make love feel easy.",
+"You stay.",
+"You try.",
+"You respect me.",
+"You are gentle with my heart.",
+"You make me feel understood.",
+"You are my comfort person.",
+"You make even simple conversations meaningful.",
+"You motivate me without even trying.",
+"You make me feel beautiful.",
+"You protect me in your own quiet way.",
+"You hold me like I belong there.",
+"You make me feel secure.",
+"You never give up on us.",
+"You make me proud.",
+"You bring calm into my chaos.",
+"You are my best friend.",
+"You make memories feel magical.",
+"You make distance feel smaller.",
+"You care deeply.",
+"You make me feel chosen.",
+"You make me smile randomly.",
+"You are honest with me.",
+"You are loyal.",
+"You make my world softer.",
+"You make love feel real.",
+"You feel like home.",
+"You’ve been mine since 22/08/22.",
+"You still compete with me about who wishes first for Valentine’s.",
+"And somehow I always win that competition.",
+"You make every year better than the last.",
+"You hold my heart carefully.",
+"You make the future feel exciting.",
+"You make me believe in forever.",
+"You are my favourite person.",
+"You are my peace.",
+"And Nikhil… I love you more than all 50 reasons combined."
+];
+
+let found=0, clicked=[];
+const container=document.getElementById("heartContainer");
+
+for(let i=0;i<50;i++){
+    let heart=document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML="❤";
+    heart.style.top=Math.random()*30+"%";
+    heart.style.left=Math.random()*90+"%";
+    heart.onclick=()=>showReason(i,heart);
+    container.appendChild(heart);
+}
+
+function showReason(i,heart){
+    if(!clicked.includes(i)){
+        clicked.push(i);
+        found++;
+        document.getElementById("counter").innerText =
+        "Hearts found: " + found + " / 50";
+        heart.style.display="none";
+    }
+
+    document.getElementById("reasonText").innerText=reasons[i];
+    document.getElementById("popup").style.display="block";
+
+    if(found===50){
+        setTimeout(()=>{
+            document.getElementById("mainContent").style.display="none";
+            document.getElementById("finalPage").style.display="flex";
+        },600);
+    }
+}
+
+function closePopup(){
+    document.getElementById("popup").style.display="none";
+}
+
+</script>
+
+</body>
+</html>
